@@ -1,0 +1,76 @@
+:root {
+  --bg: #f2f4f1;
+  --panel: #ffffff;
+  --ink: #1b2620;
+  --ink-soft: #57645c;
+  --emerald: #1f5d50;
+  --emerald-deep: #16453b;
+  --gold: #c9a227;
+  --line: #e1e5e0;
+  --spirit: #1f5d50;
+  --travail: #2e6e9e;
+  --discipline: #b24b3c;
+  --sante: #c9a227;
+  --radius: 10px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Work Sans", system-ui, -apple-system, Segoe UI, Roboto,
+    Helvetica, Arial, sans-serif;
+  padding-bottom: 60px;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+.display-font {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-weight: 500;
+}
+
+button {
+  font-family: inherit;
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.col-12 {
+  flex: 1 1 100%;
+}
+
+@media (min-width: 992px) {
+  .col-lg-4 {
+    flex: 1 1 calc(33.333% - 16px);
+    min-width: 0;
+  }
+}

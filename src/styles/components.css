@@ -1,0 +1,119 @@
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table.habits {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+  font-size: 0.92rem;
+}
+
+table.habits thead th {
+  background: var(--panel);
+  border-bottom: 2px solid var(--emerald-deep);
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  vertical-align: middle;
+  padding: 10px 8px;
+  text-align: left;
+}
+
+table.habits th.day-col,
+table.habits td.day-col {
+  text-align: center;
+  width: 56px;
+}
+
+table.habits td {
+  vertical-align: middle;
+  padding: 9px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+table.habits th.day-col.is-today,
+table.habits td.day-col.is-today {
+  background: rgba(31, 93, 80, 0.07);
+}
+
+.habit-name {
+  font-weight: 500;
+}
+
+.habit-target {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--ink-soft);
+  font-weight: 400;
+}
+
+.cat-row td {
+  background: #f7f8f6;
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 500;
+  font-size: 0.86rem;
+  letter-spacing: 0.2px;
+  color: var(--ink-soft);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.cat-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+input.habit-check {
+  width: 19px;
+  height: 19px;
+  cursor: pointer;
+  accent-color: var(--emerald);
+}
+
+.chart-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.chart-card p.sub {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin: 0 0 14px;
+}
+
+@media (max-width: 767px) {
+  table.habits {
+    font-size: 0.8rem;
+  }
+  table.habits th.day-col,
+  table.habits td.day-col {
+    width: 40px;
+  }
+  .habit-target {
+    font-size: 0.7rem;
+  }
+}

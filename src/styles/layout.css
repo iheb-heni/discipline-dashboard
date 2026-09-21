@@ -1,0 +1,63 @@
+.topbar {
+  background: var(--emerald-deep);
+  color: #efede6;
+  padding: 28px 0 26px;
+  border-bottom: 4px solid var(--gold);
+}
+
+.topbar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.topbar h1 {
+  font-size: 1.9rem;
+  margin: 0 0 2px;
+}
+
+.topbar p {
+  color: #c9d3cc;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+#todayBadge {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius);
+  padding: 10px 18px;
+  text-align: right;
+  min-width: 160px;
+}
+
+#todayBadge .score {
+  font-family: "Fraunces", Georgia, serif;
+  font-size: 2rem;
+  color: var(--gold);
+  line-height: 1;
+}
+
+#todayBadge .label {
+  font-size: 0.78rem;
+  color: #c9d3cc;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  margin: 38px 0 14px;
+  color: var(--emerald-deep);
+}
+
+.chart-wrap {
+  position: relative;
+  height: 240px;
+}
+
+.note {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  margin-top: 24px;
+}
