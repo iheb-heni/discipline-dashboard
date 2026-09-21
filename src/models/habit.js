@@ -1,10 +1,10 @@
 import { uid } from "../utils/id.js";
 
 export const CATEGORIES = {
-  spiritualite: { label: "Spiritualité", color: "#1F5D50" },
-  travail: { label: "Travail PFE", color: "#2E6E9E" },
-  discipline: { label: "Discipline", color: "#B24B3C" },
-  sante: { label: "Santé", color: "#C9A227" },
+  spiritualite: { label: "Spirituel", color: "#8B5CF6" },
+  travail: { label: "Travail", color: "#2563EB" },
+  discipline: { label: "Discipline", color: "#F59E0B" },
+  sante: { label: "Santé", color: "#16A34A" },
 };
 
 export const CATEGORY_KEYS = Object.keys(CATEGORIES);

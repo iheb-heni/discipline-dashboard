@@ -1,68 +1,98 @@
-import { state, isChecked, toggleCheck } from "../store/state.js";
-import { CATEGORIES } from "../models/habit.js";
+import {
+  state,
+  isChecked,
+  toggleCheck,
+  addHabit,
+  updateHabit,
+  removeHabit,
+} from "../store/state.js";
+import { CATEGORIES, createHabit } from "../models/habit.js";
 import { DAYS_FR, todayIndex, todayKey } from "../utils/dates.js";
 import { openModal } from "../components/modal.js";
-import { createHabit } from "../models/habit.js";
-import { addHabit, updateHabit, removeHabit } from "../store/state.js";
 
-export function renderHabitsTable(headEl, bodyEl) {
+export function renderHabitsList(container) {
+  container.innerHTML = "";
   const tIdx = todayIndex();
-  const dateKey = todayKey();
-
-  headEl.innerHTML = "";
-  const habitTh = document.createElement("th");
-  habitTh.style.minWidth = "210px";
-  habitTh.textContent = "Habitude";
-  headEl.appendChild(habitTh);
-
-  DAYS_FR.forEach((d, i) => {
-    const th = document.createElement("th");
-    th.className = "day-col" + (i === tIdx ? " is-today" : "");
-    th.textContent = d;
-    headEl.appendChild(th);
-  });
-
-  bodyEl.innerHTML = "";
+  const dk = todayKey();
 
   const sorted = [...state.habits].sort((a, b) => a.order - b.order);
-  let currentCat = null;
+
+  if (!sorted.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "Aucune habitude. Cliquez sur « Nouvelle habitude » pour commencer.";
+    container.appendChild(empty);
+    return;
+  }
 
   sorted.forEach((h) => {
-    if (h.cat !== currentCat) {
-      currentCat = h.cat;
-      const catRow = document.createElement("tr");
-      catRow.className = "cat-row";
-      const cell = document.createElement("td");
-      cell.colSpan = 8;
-      const info = CATEGORIES[h.cat] || { label: h.cat, color: "#999" };
-      cell.innerHTML = `<span class="cat-dot" style="background:${info.color}"></span>${info.label}`;
-      catRow.appendChild(cell);
-      bodyEl.appendChild(catRow);
-    }
+    const cat = CATEGORIES[h.cat] || { label: h.cat, color: "#999" };
 
-    const row = document.createElement("tr");
+    const row = document.createElement("div");
+    row.className = "habit-row";
 
-    const nameCell = document.createElement("td");
-    const nameWrap = document.createElement("div");
-    nameWrap.style.display = "flex";
-    nameWrap.style.justifyContent = "space-between";
-    nameWrap.style.alignItems = "center";
-    nameWrap.style.gap = "8px";
+    // Left check (today)
+    const checkWrap = document.createElement("div");
+    checkWrap.className = "habit-check-wrap";
+    const checkBtn = document.createElement("button");
+    checkBtn.className = "habit-check";
+    checkBtn.type = "button";
+    checkBtn.title = "Cocher aujourd'hui";
+    const done = isChecked(h.id, dk);
+    if (done) checkBtn.classList.add("is-done");
+    checkBtn.textContent = "✓";
+    checkBtn.addEventListener("click", () => toggleCheck(h.id, dk));
+    checkWrap.appendChild(checkBtn);
 
-    const left = document.createElement("div");
-    const nameSpan = document.createElement("span");
-    nameSpan.className = "habit-name";
-    nameSpan.textContent = h.name;
-    left.appendChild(nameSpan);
+    // Middle: name + meta
+    const main = document.createElement("div");
+    main.className = "habit-main";
+
+    const nameEl = document.createElement("div");
+    nameEl.className = "habit-name";
+    nameEl.textContent = h.name;
+
+    const meta = document.createElement("div");
+    meta.className = "habit-meta";
+
+    const catPill = document.createElement("span");
+    catPill.className = "pill";
+    catPill.innerHTML = `<span class="pill-dot" style="background:${cat.color}"></span>${cat.label}`;
+    meta.appendChild(catPill);
+
     if (h.target) {
-      const targetSpan = document.createElement("span");
-      targetSpan.className = "habit-target";
-      targetSpan.textContent = h.target;
-      left.appendChild(targetSpan);
+      const t = document.createElement("span");
+      t.className = "habit-target";
+      t.textContent = h.target;
+      meta.appendChild(t);
     }
 
-    const actions = document.createElement("span");
-    actions.className = "row-actions";
+    main.appendChild(nameEl);
+    main.appendChild(meta);
+
+    // Right: days + actions
+    const right = document.createElement("div");
+    right.style.display = "flex";
+    right.style.alignItems = "center";
+    right.style.gap = "12px";
+
+    const daysWrap = document.createElement("div");
+    daysWrap.className = "habit-days";
+    for (let d = 0; d < 7; d++) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "day-dot";
+      if (d === tIdx) btn.classList.add("is-today");
+      const key = d === tIdx ? dk : `${dk}#${d}`;
+      if (isChecked(h.id, key)) btn.classList.add("is-done");
+      btn.textContent = DAYS_FR[d].charAt(0);
+      btn.title = DAYS_FR[d];
+      btn.addEventListener("click", () => toggleCheck(h.id, key));
+      daysWrap.appendChild(btn);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "habit-actions";
 
     const editBtn = document.createElement("button");
     editBtn.className = "icon-btn";
@@ -71,79 +101,78 @@ export function renderHabitsTable(headEl, bodyEl) {
     editBtn.addEventListener("click", () => editHabit(h));
 
     const delBtn = document.createElement("button");
-    delBtn.className = "icon-btn";
+    delBtn.className = "icon-btn danger";
     delBtn.title = "Supprimer";
     delBtn.textContent = "×";
     delBtn.addEventListener("click", () => {
-      if (confirm(`Supprimer « ${h.name} » ?`)) removeHabit(h.id);
+      openModal({
+        title: "Supprimer l'habitude",
+        body: (() => {
+          const p = document.createElement("p");
+          p.textContent = `Supprimer « ${h.name} » ? Cette action est irréversible.`;
+          p.style.color = "var(--text-soft)";
+          p.style.fontSize = "13.5px";
+          return p;
+        })(),
+        confirmLabel: "Supprimer",
+        danger: true,
+        onConfirm: () => removeHabit(h.id),
+      });
     });
 
     actions.appendChild(editBtn);
     actions.appendChild(delBtn);
 
-    nameWrap.appendChild(left);
-    nameWrap.appendChild(actions);
-    nameCell.appendChild(nameWrap);
-    row.appendChild(nameCell);
+    right.appendChild(daysWrap);
+    right.appendChild(actions);
 
-    // NOTE: checks are stored per-date. For the current week we approximate by
-    // using todayKey only when d === todayIndex, otherwise no stored check.
-    for (let d = 0; d < 7; d++) {
-      const td = document.createElement("td");
-      td.className = "day-col" + (d === tIdx ? " is-today" : "");
-      const input = document.createElement("input");
-      input.type = "checkbox";
-      input.className = "habit-check";
-      const cellDateKey = d === tIdx ? dateKey : `${dateKey}#${d}`;
-      input.checked = isChecked(h.id, cellDateKey);
-      input.dataset.habit = h.id;
-      input.dataset.date = cellDateKey;
-      input.addEventListener("change", (e) => {
-        toggleCheck(h.id, e.target.dataset.date);
-      });
-      td.appendChild(input);
-      row.appendChild(td);
-    }
+    row.appendChild(checkWrap);
+    row.appendChild(main);
+    row.appendChild(right);
 
-    bodyEl.appendChild(row);
+    container.appendChild(row);
   });
 }
 
-export function renderAddHabitButton(container) {
-  const toolbar = document.createElement("div");
-  toolbar.className = "toolbar";
-
-  const addBtn = document.createElement("button");
-  addBtn.className = "btn btn-primary";
-  addBtn.textContent = "+ Ajouter une habitude";
-  addBtn.addEventListener("click", () => editHabit(null));
-
-  toolbar.appendChild(addBtn);
-  container.insertBefore(toolbar, container.firstChild);
+export function renderCategoryLegend(container) {
+  container.innerHTML = "";
+  Object.entries(CATEGORIES).forEach(([key, info]) => {
+    const pill = document.createElement("span");
+    pill.className = "pill";
+    pill.innerHTML = `<span class="pill-dot" style="background:${info.color}"></span>${info.label}`;
+    container.appendChild(pill);
+  });
 }
 
-function editHabit(habit) {
+export function editHabit(habit) {
   const form = document.createElement("div");
 
   const nameField = document.createElement("div");
   nameField.className = "field";
-  nameField.innerHTML = `<label>Nom</label>`;
+  const nameLabel = document.createElement("label");
+  nameLabel.textContent = "Nom";
   const nameInput = document.createElement("input");
   nameInput.type = "text";
+  nameInput.placeholder = "Ex. Lire 20 pages";
   nameInput.value = habit ? habit.name : "";
+  nameField.appendChild(nameLabel);
   nameField.appendChild(nameInput);
 
   const targetField = document.createElement("div");
   targetField.className = "field";
-  targetField.innerHTML = `<label>Objectif (optionnel)</label>`;
+  const targetLabel = document.createElement("label");
+  targetLabel.textContent = "Objectif (optionnel)";
   const targetInput = document.createElement("input");
   targetInput.type = "text";
+  targetInput.placeholder = "Ex. 30 min";
   targetInput.value = habit ? habit.target || "" : "";
+  targetField.appendChild(targetLabel);
   targetField.appendChild(targetInput);
 
   const catField = document.createElement("div");
   catField.className = "field";
-  catField.innerHTML = `<label>Catégorie</label>`;
+  const catLabel = document.createElement("label");
+  catLabel.textContent = "Catégorie";
   const catSelect = document.createElement("select");
   Object.entries(CATEGORIES).forEach(([key, info]) => {
     const opt = document.createElement("option");
@@ -152,6 +181,7 @@ function editHabit(habit) {
     if (habit && habit.cat === key) opt.selected = true;
     catSelect.appendChild(opt);
   });
+  catField.appendChild(catLabel);
   catField.appendChild(catSelect);
 
   form.appendChild(nameField);

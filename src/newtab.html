@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,66 +9,220 @@
     <link rel="stylesheet" href="styles/components.css" />
   </head>
   <body>
-    <header class="topbar">
-      <div class="container topbar-inner">
-        <div>
-          <h1 class="display-font">Discipline quotidienne</h1>
-          <p id="dateLine">—</p>
-        </div>
-        <div id="todayBadge">
-          <div class="score" id="todayScoreText">0 / 0</div>
-          <div class="label">accompli aujourd'hui</div>
-        </div>
-      </div>
-    </header>
+    <div class="app">
+      <!-- ==================== SIDEBAR ==================== -->
+      <aside class="sidebar">
+      <div class="brand">
+  <img
+    class="brand-logo"
+    src="../../assets/icons/icon48.png"
+    alt="Discipline"
+    width="34"
+    height="34"
+  />
+  <div class="brand-text">
+    <div class="brand-title">Discipline</div>
+    <div class="brand-sub">Daily Dashboard</div>
+  </div>
+</div>
 
-    <main class="container" id="app">
-      <section id="view-dashboard">
-        <h2 class="section-title">Suivi de la semaine</h2>
-        <div class="panel">
-          <div class="table-responsive">
-            <table class="table habits align-middle mb-0" id="habitsTable">
-              <thead>
-                <tr id="habitsHead">
-                  <th style="min-width: 210px">Habitude</th>
-                </tr>
-              </thead>
-              <tbody id="habitsBody"></tbody>
-            </table>
-          </div>
-        </div>
+        <nav class="nav" id="nav">
+          <button class="nav-item is-active" data-view="dashboard">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+            </span>
+            <span>Dashboard</span>
+          </button>
+          <button class="nav-item" data-view="habits">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            </span>
+            <span>Habitudes</span>
+          </button>
+          <button class="nav-item" data-view="stats">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>
+            </span>
+            <span>Statistiques</span>
+          </button>
+          <button class="nav-item" data-view="settings">
+            <span class="nav-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.36.38.67.7.89.3.22.66.34 1.04.34H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            </span>
+            <span>Paramètres</span>
+          </button>
+        </nav>
 
-        <h2 class="section-title">Vue d'ensemble</h2>
-        <div class="row g-3">
-          <div class="col-12 col-lg-4">
-            <div class="chart-card">
-              <h3>Aujourd'hui</h3>
-              <p class="sub">Part des habitudes cochées pour la journée en cours.</p>
-              <div class="chart-wrap"><canvas id="todayChart"></canvas></div>
+        <div class="sidebar-footer">
+          <button class="theme-toggle" id="themeToggle" title="Basculer le thème">
+            <span class="theme-icon" id="themeIcon">☀</span>
+            <span class="theme-label" id="themeLabel">Light</span>
+          </button>
+          <div class="version">v1.1.0</div>
+        </div>
+      </aside>
+
+      <!-- ==================== MAIN ==================== -->
+      <main class="main">
+        <!-- ---------- DASHBOARD ---------- -->
+        <section class="view is-active" id="view-dashboard">
+          <header class="page-head">
+            <div>
+              <h1 class="page-title">Bonjour  </h1>
+              <p class="page-sub">Construisons une meilleure journée.</p>
+            </div>
+            <div class="page-date" id="dateLine">—</div>
+          </header>
+
+          <!-- KPI CARDS -->
+          <div class="kpi-grid">
+            <div class="kpi">
+              <div class="kpi-label">Aujourd'hui</div>
+              <div class="kpi-value" id="kpiToday">0 / 0</div>
+              <div class="kpi-foot">
+                <span class="kpi-pct" id="kpiTodayPct">0%</span>
+                <span class="kpi-hint">complété</span>
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Série actuelle</div>
+              <div class="kpi-value" id="kpiStreak">0 j</div>
+              <div class="kpi-foot">
+                <span class="kpi-icon"></span>
+                <span class="kpi-hint">jours consécutifs</span>
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Cette semaine</div>
+              <div class="kpi-value" id="kpiWeek">0 / 0</div>
+              <div class="kpi-foot">
+                <span class="kpi-pct" id="kpiWeekPct">0%</span>
+                <span class="kpi-hint">complété</span>
+              </div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Habitudes</div>
+              <div class="kpi-value" id="kpiHabits">0</div>
+              <div class="kpi-foot">
+                <span class="kpi-icon">✦</span>
+                <span class="kpi-hint">actives</span>
+              </div>
             </div>
           </div>
-          <div class="col-12 col-lg-4">
-            <div class="chart-card">
-              <h3>Progression sur 7 jours</h3>
-              <p class="sub">Nombre d'habitudes cochées, jour par jour.</p>
-              <div class="chart-wrap"><canvas id="weekChart"></canvas></div>
+
+          <!-- TODAY PROGRESS -->
+          <section class="card card-today">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Aujourd'hui</h2>
+                <p class="card-sub">Votre progression du jour</p>
+              </div>
             </div>
+            <div class="today-body">
+              <div class="donut-wrap">
+                <canvas id="todayChart"></canvas>
+                <div class="donut-center">
+                  <div class="donut-value" id="donutValue">0 / 0</div>
+                  <div class="donut-label">habitudes</div>
+                </div>
+              </div>
+              <div class="today-list" id="todayList"></div>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="todayProgressFill"></div>
+            </div>
+          </section>
+
+          <!-- WEEKLY PROGRESS -->
+          <section class="card">
+            <div class="card-head">
+              <div>
+                <h2 class="card-title">Progression de la semaine</h2>
+                <p class="card-sub">Votre activité des 7 derniers jours</p>
+              </div>
+            </div>
+            <div class="chart-wrap tall"><canvas id="weekChart"></canvas></div>
+          </section>
+        </section>
+
+        <!-- ---------- HABITS ---------- -->
+        <section class="view" id="view-habits">
+          <header class="page-head">
+            <div>
+              <h1 class="page-title">Mes habitudes</h1>
+              <p class="page-sub">Suivez et gérez vos habitudes quotidiennes.</p>
+            </div>
+            <button class="btn btn-primary" id="addHabitBtn">+ Nouvelle habitude</button>
+          </header>
+
+          <div class="card">
+            <div class="habits-toolbar">
+              <div class="legend" id="categoryLegend"></div>
+            </div>
+            <div class="habits-list" id="habitsList"></div>
           </div>
-          <div class="col-12 col-lg-4">
-            <div class="chart-card">
-              <h3>Par catégorie</h3>
-              <p class="sub">Total de la semaine, réparti par domaine.</p>
+        </section>
+
+        <!-- ---------- STATS ---------- -->
+        <section class="view" id="view-stats">
+          <header class="page-head">
+            <div>
+              <h1 class="page-title">Statistiques</h1>
+              <p class="page-sub">Analysez votre discipline dans le temps.</p>
+            </div>
+          </header>
+
+          <div class="stats-grid">
+            <section class="card">
+              <div class="card-head">
+                <h2 class="card-title">Progression 7 jours</h2>
+              </div>
+              <div class="chart-wrap"><canvas id="statsWeekChart"></canvas></div>
+            </section>
+            <section class="card">
+              <div class="card-head">
+                <h2 class="card-title">Répartition par catégorie</h2>
+              </div>
               <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
-            </div>
+            </section>
           </div>
-        </div>
+        </section>
 
-        <p class="note">
-          Les cases cochées sont conservées dans ce navigateur et synchronisées
-          si vous êtes connecté à votre compte Chrome.
-        </p>
-      </section>
-    </main>
+        <!-- ---------- SETTINGS ---------- -->
+        <section class="view" id="view-settings">
+          <header class="page-head">
+            <div>
+              <h1 class="page-title">Paramètres</h1>
+              <p class="page-sub">Personnalisez votre expérience.</p>
+            </div>
+          </header>
+
+          <section class="card">
+            <h2 class="card-title">Apparence</h2>
+            <p class="card-sub">Choisissez le thème de l'interface.</p>
+            <div class="segmented" id="themeSegmented">
+              <button data-theme-choice="light">Clair</button>
+              <button data-theme-choice="dark">Sombre</button>
+              <button data-theme-choice="system">Système</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 class="card-title">Données</h2>
+            <p class="card-sub">Réinitialiser efface vos cases cochées et restaure les habitudes par défaut.</p>
+            <button class="btn btn-danger" id="resetBtn">Réinitialiser toutes les données</button>
+          </section>
+
+          <section class="card">
+            <h2 class="card-title">Application</h2>
+            <div class="kv"><span>Version</span><span>1.1.0</span></div>
+            <div class="kv"><span>Auteur</span><span>Iheb Heni</span></div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-root" id="modalRoot"></div>
 
     <script src="../../vendor/chart.umd.min.js"></script>
     <script type="module" src="newtab.js"></script>

@@ -1,3 +1,7 @@
+function cssVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
 export function createTodayChart(canvas) {
   return new Chart(canvas, {
     type: "doughnut",
@@ -6,20 +10,20 @@ export function createTodayChart(canvas) {
       datasets: [
         {
           data: [0, 1],
-          backgroundColor: ["#1F5D50", "#E1E5E0"],
+          backgroundColor: [cssVar("--primary"), cssVar("--surface-2")],
           borderWidth: 0,
+          hoverOffset: 0,
         },
       ],
     },
     options: {
-      cutout: "70%",
+      cutout: "76%",
       responsive: true,
       maintainAspectRatio: false,
+      animation: { duration: 400 },
       plugins: {
-        legend: {
-          position: "bottom",
-          labels: { boxWidth: 12, font: { family: "Work Sans" } },
-        },
+        legend: { display: false },
+        tooltip: { enabled: false },
       },
     },
   });
@@ -27,5 +31,17 @@ export function createTodayChart(canvas) {
 
 export function updateTodayChart(chart, done, total) {
   chart.data.datasets[0].data = [done, Math.max(total - done, 0)];
-  chart.update();
+  chart.data.datasets[0].backgroundColor = [
+    cssVar("--primary"),
+    cssVar("--surface-2"),
+  ];
+  chart.update("none");
+}
+
+export function refreshTodayChartTheme(chart) {
+  chart.data.datasets[0].backgroundColor = [
+    cssVar("--primary"),
+    cssVar("--surface-2"),
+  ];
+  chart.update("none");
 }

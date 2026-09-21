@@ -1,4 +1,13 @@
-export function openModal({ title, body, onConfirm, confirmLabel = "Valider" }) {
+export function openModal({
+  title,
+  body,
+  onConfirm,
+  confirmLabel = "Confirmer",
+  cancelLabel = "Annuler",
+  danger = false,
+}) {
+  const root = document.getElementById("modalRoot") || document.body;
+
   const backdrop = document.createElement("div");
   backdrop.className = "modal-backdrop";
 
@@ -18,11 +27,11 @@ export function openModal({ title, body, onConfirm, confirmLabel = "Valider" }) 
 
   const cancel = document.createElement("button");
   cancel.className = "btn btn-ghost";
-  cancel.textContent = "Annuler";
+  cancel.textContent = cancelLabel;
   cancel.addEventListener("click", close);
 
   const confirm = document.createElement("button");
-  confirm.className = "btn btn-primary";
+  confirm.className = "btn " + (danger ? "btn-danger" : "btn-primary");
   confirm.textContent = confirmLabel;
   confirm.addEventListener("click", () => {
     const result = onConfirm ? onConfirm() : true;
@@ -36,13 +45,26 @@ export function openModal({ title, body, onConfirm, confirmLabel = "Valider" }) 
   modal.appendChild(content);
   modal.appendChild(footer);
   backdrop.appendChild(modal);
-  document.body.appendChild(backdrop);
+  root.appendChild(backdrop);
+
+  const onKey = (e) => {
+    if (e.key === "Escape") close();
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+      confirm.click();
+    }
+  };
+  document.addEventListener("keydown", onKey);
 
   backdrop.addEventListener("click", (e) => {
     if (e.target === backdrop) close();
   });
 
+  const firstInput = content.querySelector("input, select, textarea");
+  if (firstInput) setTimeout(() => firstInput.focus(), 30);
+
   function close() {
+    document.removeEventListener("keydown", onKey);
     backdrop.remove();
   }
 
