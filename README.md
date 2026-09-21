@@ -1,170 +1,303 @@
 # Discipline Dashboard
 
-A free, open-source Chrome extension that replaces your new tab page with a personal discipline dashboard. Track habits, manage categories, and visualize your progress — all stored locally on your device, with no accounts and no tracking.
+A free, open-source Chrome extension that replaces your New Tab page with a personal discipline dashboard. Track habits, manage categories, and visualize your progress — all stored locally in your browser, with no accounts and no tracking.
 
 Developed by **Iheb Heni**
-- Email: ihebheni013@gmail.com
-- Phone: +216 54 670 322
-- LinkedIn: https://www.linkedin.com/in/iheb-heni/
+
+- **Email:** ihebheni013@gmail.com
+- **Phone:** +216 54 670 322
+- **LinkedIn:** https://www.linkedin.com/in/iheb-heni/
+- **GitHub:** https://github.com/iheb-heni/discipline-dashboard
 
 ---
 
 ## What It Does
 
-Every time you open a new tab, you see a clean, modern dashboard with:
+Every time you open a new tab, Discipline Dashboard gives you a clean and modern overview of your daily discipline.
 
-- **Daily greeting** with your name and today's date
-- **KPI cards**: today's completion, current streak, weekly total, active habits
-- **Today's progress**: a donut chart with your completion percentage and a clickable habit list
-- **Weekly progress**: a bar chart showing your activity over the last 7 days
-- **Habit management**: add, edit, delete, and check off habits directly from the dashboard
-- **Category management**: create custom categories with colors, rename, and delete them
-- **Light and dark mode**: switch between themes, with your preference saved automatically
+### Dashboard
 
-All data stays in your browser using Chrome's built-in storage. Nothing is sent to any server.
+- **Personalized greeting** with your name and today's date
+- **KPI cards** showing today's completion, current streak, weekly total, and active habits
+- **Today's progress** with a donut chart and habit checklist
+- **Weekly progress** with a 7-day activity chart
+- **Habit management** directly from the dashboard
+- **Category management** with custom names and colors
+- **Light and dark mode** with automatic theme persistence
+
+All data is stored in your browser using Chrome's built-in storage. No data is sent to a remote server.
 
 ---
 
 ## Features
 
 ### Core
-- New tab override: the dashboard replaces Chrome's default new tab page
-- Habit tracker with a 7-day grid (Monday to Sunday)
+
+- New Tab override: replaces Chrome's default New Tab page
+- Habit tracker with a Monday–Sunday weekly view
 - Add, edit, and delete habits
 - Check off habits for today and previous days of the week
-- Live "today" score badge
-- Three charts: today's completion (donut), 7-day progression (bar), and weekly totals per category (horizontal bar)
-- Persistent storage via `chrome.storage.sync` (falls back to `localStorage` in non-extension contexts)
+- Live daily completion score
+- Today's completion donut chart
+- 7-day progression bar chart
+- Weekly totals by category using a horizontal bar chart
+- Persistent storage using `chrome.storage.sync`
+- `localStorage` fallback for non-extension development contexts
 
 ### Categories
-- Create custom categories with a name and color
-- Edit existing categories (rename, change color)
-- Delete categories, with automatic reassignment of habits to another category
-- Category pills shown on each habit and in the dashboard legend
+
+- Create custom categories
+- Assign a name and color to each category
+- Edit existing categories
+- Rename categories
+- Change category colors
+- Delete categories
+- Automatically reassign habits when a category is deleted
+- Display category indicators throughout the dashboard
 
 ### Personalization
-- Set your first name to personalize the greeting
-- Light, dark, or system theme
-- Theme preference is saved and restored
+
+- Set your first name for a personalized greeting
+- Choose between:
+  - Light mode
+  - Dark mode
+  - System mode
+- Automatically save and restore your theme preference
 
 ### Data
-- Reset all data to start fresh
+
+- Reset all application data
+- All application data remains inside the browser
+- No account is required
 
 ---
 
 ## Tech Stack
 
-- Plain HTML, CSS, and JavaScript (ES modules). No framework, no build step.
-- Chrome Extension Manifest V3
-- `chrome.storage.sync` for persistence
-- Chart.js bundled locally in `vendor/` (no CDN at runtime)
-- Native `Intl.DateTimeFormat` for dates and `crypto.randomUUID()` for IDs
+- **HTML5**
+- **CSS3**
+- **JavaScript (ES Modules)**
+- **Chrome Extension Manifest V3**
+- **Chrome Storage API**
+- **Chart.js**
+- Native `Intl.DateTimeFormat` for date formatting
+- `crypto.randomUUID()` for unique IDs
+- No framework
+- No build step
+- No CDN dependency at runtime
+
+Chart.js is bundled locally inside the `vendor/` directory.
 
 ---
 
 ## Project Structure
 
-
+```text
 discipline-dashboard/
+│
 ├── manifest.json
 ├── README.md
+│
 ├── src/
-│ ├── newtab.html # Main entry point
-│ ├── newtab.js # Bootstrap and theme initialization
-│ ├── styles/ # base.css, layout.css, components.css
-│ ├── store/ # state, storage, theme, profile, categories
-│ ├── models/ # habit model
-│ ├── views/ # dashboard, habitsTable, categories, stats, settings
-│ ├── components/ # modal
-│ ├── charts/ # todayChart, weekChart, categoryChart
-│ └── utils/ # dates, id
+│   ├── newtab.html
+│   ├── newtab.js
+│   │
+│   ├── styles/
+│   │   ├── base.css
+│   │   ├── layout.css
+│   │   └── components.css
+│   │
+│   ├── store/
+│   │   ├── storage.js
+│   │   ├── state.js
+│   │   └── migrate.js
+│   │
+│   ├── models/
+│   │   ├── habit.js
+│   │   ├── task.js
+│   │   └── subtask.js
+│   │
+│   ├── views/
+│   │   ├── dashboard.js
+│   │   ├── habitsTable.js
+│   │   ├── habitEditor.js
+│   │   ├── stats.js
+│   │   └── settings.js
+│   │
+│   ├── components/
+│   │   ├── modal.js
+│   │   ├── checkbox.js
+│   │   └── button.js
+│   │
+│   ├── charts/
+│   │   ├── todayChart.js
+│   │   ├── weekChart.js
+│   │   └── categoryChart.js
+│   │
+│   └── utils/
+│       ├── dates.js
+│       └── id.js
+│
 ├── vendor/
-│ └── chart.umd.min.js
+│   └── chart.umd.min.js
+│
 └── assets/
-└── icons/ # icon16, icon32, icon48, icon128
+    └── icons/
+        ├── icon16.png
+        ├── icon32.png
+        ├── icon48.png
+        └── icon128.png
+```
 
+---
 
-## Installation (Local Development)
+## Installation
 
 ### Prerequisites
-- Google Chrome (or any Chromium-based browser)
-- Git (optional, for cloning)
 
-### Steps
+- Google Chrome or another Chromium-based browser
+- Git — optional, only required for cloning the repository
 
-1. **Clone the repository**
-   git clone https://github.com/iheb-heni/discipline-dashboard.git
-   cd discipline-dashboard
-   Download Chart.js locally
+### 1. Clone the Repository
 
-The extension cannot load remote scripts. You need to download Chart.js into the vendor/ folder:
+```bash
+git clone https://github.com/iheb-heni/discipline-dashboard.git
+cd discipline-dashboard
+```
 
-powershell
-# Windows PowerShell
-Invoke-WebRequest -Uri "https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" -OutFile "vendor\chart.umd.min.js"
-# macOS / Linux
+### 2. Download Chart.js Locally
+
+The extension cannot load remote JavaScript files at runtime, so Chart.js must be stored locally in the `vendor/` directory.
+
+#### Windows PowerShell
+
+```powershell
+Invoke-WebRequest `
+  -Uri "https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" `
+  -OutFile "vendor\chart.umd.min.js"
+```
+
+#### macOS / Linux
+
+```bash
 curl -o vendor/chart.umd.min.js https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js
-Add icons (optional for local testing)
+```
 
-Place four PNG files in assets/icons/: icon16.png, icon32.png, icon48.png, icon128.png. Any image will work. If you skip this, Chrome will use a default icon.
+### 3. Add Extension Icons
 
-Load the extension in Chrome
+Place the following PNG files inside:
 
-Open chrome://extensions
+```text
+assets/icons/
+```
 
-Enable Developer mode (toggle in the top right)
+Required files:
 
-Click Load unpacked
+```text
+icon16.png
+icon32.png
+icon48.png
+icon128.png
+```
 
-Select the discipline-dashboard folder (the one containing manifest.json)
+For local testing, any valid PNG images can be used.
 
-Test it
+### 4. Load the Extension in Chrome
 
-Open a new tab (Ctrl+T)
+Open:
 
-The dashboard should appear
+```text
+chrome://extensions
+```
 
-After Changing Code
-Go to chrome://extensions
+Then:
 
-Click the reload (↻) button on the Discipline Dashboard card
+1. Enable **Developer mode**
+2. Click **Load unpacked**
+3. Select the `discipline-dashboard` folder
+4. Make sure you select the folder containing `manifest.json`
 
-Close the current new tab and open a fresh one
+### 5. Test the Extension
 
-Privacy
-No data leaves your device unless you explicitly export it
+Open a new tab:
 
-No analytics, no tracking, no third-party requests at runtime
+```text
+Ctrl + T
+```
 
-Only the storage permission is requested
+The Discipline Dashboard should appear instead of Chrome's default New Tab page.
 
-Everything is stored locally in your Chrome profile
+---
 
-Roadmap
+## After Changing the Code
+
+After modifying the extension:
+
+1. Open:
+
+```text
+chrome://extensions
+```
+
+2. Find **Discipline Dashboard**
+3. Click the **Reload ↻** button
+4. Close the current New Tab
+5. Open a new tab with `Ctrl + T`
+
+The updated version should now be loaded.
+
+---
+
+## Privacy
+
+Discipline Dashboard is designed to keep your data inside your browser.
+
+- No user account required
+- No analytics
+- No tracking
+- No advertising
+- No third-party requests at runtime
+- No external API required
+- No remote JavaScript dependencies at runtime
+- Application data is stored using Chrome's storage system
+- The extension requests only the permissions required for its functionality
+
+Your habit data remains in your Chrome profile unless you explicitly export or otherwise transfer it.
+
+---
+
+## Roadmap
+
 Planned features for future versions:
 
-Per-habit streaks (current and longest)
+- Per-habit current and longest streaks
+- Daily notes / journal
+- Import and export data as JSON
+- Configurable start-of-week preference
+- Recurring schedules for specific days
+- Pomodoro / focus timer
+- Statistics export to CSV
+- Statistics export to PDF
+- Additional dashboard customization
+- More detailed productivity analytics
 
-Daily notes / journal
+---
 
-Import and export data as JSON
+## License
 
-Start-of-week preference
+This project is licensed under the **MIT License**.
 
-Recurring schedules (specific days only)
+You are free to use, modify, and distribute the project according to the terms of the license.
 
-Pomodoro / focus timer
+---
 
-Statistics export (CSV, PDF)
+## Author
 
-License
-MIT License. Free to use, modify, and distribute.
+### Iheb Heni
 
-Author
-Iheb Heni
+Full Stack Web Developer
 
-Email: ihebheni013@gmail.com
-
-Phone: +216 54 670 322
-
-LinkedIn: https://www.linkedin.com/in/iheb-heni/
+- **Email:** ihebheni013@gmail.com
+- **Phone:** +216 54 670 322
+- **LinkedIn:** https://www.linkedin.com/in/iheb-heni/
+- **GitHub:** https://github.com/iheb-heni/discipline-dashboard
