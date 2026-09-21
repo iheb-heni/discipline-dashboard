@@ -35,8 +35,10 @@ export function renderHabitsList(container) {
   }
 
   sorted.forEach((h) => {
-    const cat = { label: categoryLabel(h.cat), color: categoryColor(h.cat) };
-
+    const hasCat = h.cat && categoryLabel(h.cat);
+    const cat = hasCat
+      ? { label: categoryLabel(h.cat), color: categoryColor(h.cat) }
+      : null;
     const row = document.createElement("div");
     row.className = "habit-row";
 
@@ -68,7 +70,10 @@ export function renderHabitsList(container) {
     catPill.className = "pill";
     catPill.innerHTML = `<span class="pill-dot" style="background:${cat.color}"></span>${cat.label}`;
     meta.appendChild(catPill);
-
+    const hasCat = h.cat && categoryLabel(h.cat);
+    const cat = hasCat
+      ? { label: categoryLabel(h.cat), color: categoryColor(h.cat) }
+      : null;
     if (h.target) {
       const t = document.createElement("span");
       t.className = "habit-target";
@@ -148,12 +153,14 @@ export function renderHabitsList(container) {
 // ============================================================
 export function renderCategoryLegend(container) {
   container.innerHTML = "";
+
   const cats = getCategories();
   Object.entries(cats).forEach(([key, info]) => {
-    const pill = document.createElement("span");
-    pill.className = "pill";
-    pill.innerHTML = `<span class="pill-dot" style="background:${info.color}"></span>${info.label}`;
-    container.appendChild(pill);
+    const opt = document.createElement("option");
+    opt.value = key;
+    opt.textContent = info.label;
+    if (habit && habit.cat === key) opt.selected = true;
+    catSelect.appendChild(opt);
   });
 }
 
@@ -190,6 +197,11 @@ export function editHabit(habit) {
   const catLabel = document.createElement("label");
   catLabel.textContent = "Catégorie";
   const catSelect = document.createElement("select");
+  const noneOpt = document.createElement("option");
+  noneOpt.value = "";
+  noneOpt.textContent = "Aucune";
+  if (!habit || !habit.cat) noneOpt.selected = true;
+  catSelect.appendChild(noneOpt);
 
   const cats = getCategories();
   Object.entries(cats).forEach(([key, info]) => {

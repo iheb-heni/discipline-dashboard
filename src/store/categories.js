@@ -2,13 +2,7 @@ import { get, set } from "./storage.js";
 
 const KEY = "dd_categories";
 
-export const DEFAULT_CATEGORIES = {
-  spiritualite: { label: "Spirituel", color: "#8B5CF6" },
-  travail: { label: "Travail", color: "#2563EB" },
-  discipline: { label: "Discipline", color: "#F59E0B" },
-  sante: { label: "Santé", color: "#16A34A" },
-};
-
+export const DEFAULT_CATEGORIES = {};
 let cache = { ...DEFAULT_CATEGORIES };
 let loaded = false;
 const listeners = new Set();
@@ -29,11 +23,11 @@ function emit() {
 export async function loadCategories() {
   const res = await get([KEY]);
   const stored = res[KEY];
-  if (stored && typeof stored === "object" && Object.keys(stored).length) {
-    cache = { ...stored };
-  } else {
-    cache = { ...DEFAULT_CATEGORIES };
-  }
+  if (stored && typeof stored === "object") {
+  cache = { ...stored };
+} else {
+  cache = { ...DEFAULT_CATEGORIES }; 
+}
   loaded = true;
   emit();
   return cache;
