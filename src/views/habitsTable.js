@@ -6,9 +6,15 @@ import {
   updateHabit,
   removeHabit,
 } from "../store/state.js";
-import { CATEGORIES, createHabit } from "../models/habit.js";
+import { createHabit } from "../models/habit.js";
 import { DAYS_FR, todayIndex, todayKey } from "../utils/dates.js";
 import { openModal } from "../components/modal.js";
+import {
+  getCategories,
+  categoryKeys,
+  categoryColor,
+  categoryLabel,
+} from "../store/categories.js";
 
 export function renderHabitsList(container) {
   container.innerHTML = "";
@@ -20,13 +26,14 @@ export function renderHabitsList(container) {
   if (!sorted.length) {
     const empty = document.createElement("div");
     empty.className = "empty";
-    empty.textContent = "Aucune habitude. Cliquez sur « Nouvelle habitude » pour commencer.";
+    empty.textContent =
+      "Aucune habitude. Cliquez sur « Nouvelle habitude » pour commencer.";
     container.appendChild(empty);
     return;
   }
 
   sorted.forEach((h) => {
-    const cat = CATEGORIES[h.cat] || { label: h.cat, color: "#999" };
+    const cat = { label: categoryLabel(h.cat), color: categoryColor(h.cat) };
 
     const row = document.createElement("div");
     row.className = "habit-row";
@@ -136,12 +143,18 @@ export function renderHabitsList(container) {
 
 export function renderCategoryLegend(container) {
   container.innerHTML = "";
-  Object.entries(CATEGORIES).forEach(([key, info]) => {
-    const pill = document.createElement("span");
-    pill.className = "pill";
-    pill.innerHTML = `<span class="pill-dot" style="background:${info.color}"></span>${info.label}`;
-    container.appendChild(pill);
+  const cats = getCategories();
+  Object.entries(cats).forEach(([key, info]) => {
+    const opt = document.createElement("option");
+    opt.value = key;
+    opt.textContent = info.label;
+    if (habit && habit.cat === key) opt.selected = true;
+    catSelect.appendChild(opt);
   });
+  // Fallback: if no category matches and it's a new habit, preselect the first
+  if (!habit && catSelect.options.length) {
+    catSelect.selectedIndex = 0;
+  }
 }
 
 export function editHabit(habit) {

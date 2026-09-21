@@ -1,6 +1,6 @@
 import { state } from "../store/state.js";
-import { CATEGORY_KEYS } from "../models/habit.js";
 import { todayIndex, todayKey } from "../utils/dates.js";
+import { categoryKeys } from "../store/categories.js";
 
 export function computeTodayCount() {
   const dk = todayKey();
@@ -31,26 +31,30 @@ export function computeWeekTotal() {
 export function computeCategoryTotals() {
   const week = computeWeekCounts();
   const total = week.reduce((a, b) => a + b, 0);
-  const perCat = CATEGORY_KEYS.map(() => 0);
-  const counts = CATEGORY_KEYS.map(() => 0);
+  const keys = categoryKeys();
+  const perCat = {};
+  const counts = {};
+
+  keys.forEach((k) => {
+    perCat[k] = 0;
+    counts[k] = 0;
+  });
 
   state.habits.forEach((h) => {
-    const idx = CATEGORY_KEYS.indexOf(h.cat);
-    if (idx >= 0) counts[idx]++;
+    if (counts[h.cat] !== undefined) counts[h.cat]++;
   });
 
-  const totalHabits = counts.reduce((a, b) => a + b, 0) || 1;
-  CATEGORY_KEYS.forEach((k, i) => {
-    perCat[i] = Math.round((counts[i] / totalHabits) * total);
+  const totalHabits = Object.values(counts).reduce((a, b) => a + b, 0) || 1;
+
+  keys.forEach((k) => {
+    perCat[k] = Math.round((counts[k] / totalHabits) * total);
   });
+
   return perCat;
 }
 
 export function computeStreak() {
-  // current streak = consecutive days (backwards from today) where at least 1 habit done
   const dk = todayKey();
-  // We only have per-day markers for the current week via keys `dk#d`
-  // Approximate: count backward consecutive days with at least one check.
   const tIdx = todayIndex();
   let streak = 0;
   for (let d = tIdx; d >= 0; d--) {

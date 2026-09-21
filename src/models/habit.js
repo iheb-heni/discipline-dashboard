@@ -1,14 +1,5 @@
 import { uid } from "../utils/id.js";
 
-export const CATEGORIES = {
-  spiritualite: { label: "Spirituel", color: "#8B5CF6" },
-  travail: { label: "Travail", color: "#2563EB" },
-  discipline: { label: "Discipline", color: "#F59E0B" },
-  sante: { label: "Santé", color: "#16A34A" },
-};
-
-export const CATEGORY_KEYS = Object.keys(CATEGORIES);
-
 export function createHabit({
   name,
   target = "",

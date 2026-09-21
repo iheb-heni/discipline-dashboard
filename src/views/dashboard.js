@@ -13,14 +13,10 @@ import {
   computeCategoryTotals,
   computeStreak,
 } from "./stats.js";
+import { loadCategories, subscribeCategories } from "../store/categories.js";
 import { getProfile } from "../store/profile.js";
 import { renderSettings } from "./settings.js";
-import {
-  todayIndex,
-  formatLongDate,
-  DAYS_FR,
-  todayKey,
-} from "../utils/dates.js";
+import { todayIndex, formatLongDate, todayKey } from "../utils/dates.js";
 import {
   createTodayChart,
   updateTodayChart,
@@ -38,7 +34,7 @@ import {
 } from "../charts/categoryChart.js";
 
 export function initDashboard() {
-  // Refs
+  // ---------- Refs ----------
   const refs = {
     dateLine: document.getElementById("dateLine"),
     kpiToday: document.getElementById("kpiToday"),
@@ -69,18 +65,23 @@ export function initDashboard() {
     userNameInput: document.getElementById("userNameInput"),
     saveProfileBtn: document.getElementById("saveProfileBtn"),
     profileSavedMsg: document.getElementById("profileSavedMsg"),
+    addCategoryBtn: document.getElementById("addCategoryBtn"),
+    categoriesList: document.getElementById("categoriesList"),
   };
 
   refs.dateLine.textContent = formatLongDate();
+
+  const tIdx = todayIndex();
+
+  // ---------- Greeting ----------
   async function refreshGreeting() {
     const p = await getProfile();
     refs.userName.textContent = p.name ? " " + p.name : "";
   }
   refreshGreeting();
   document.addEventListener("dd-profile-change", refreshGreeting);
-  const tIdx = todayIndex();
 
-  // Charts
+  // ---------- Charts ----------
   const todayChart = createTodayChart(document.getElementById("todayChart"));
   const weekChart = createWeekChart(document.getElementById("weekChart"), tIdx);
   const statsWeekChart = createWeekChart(
@@ -91,7 +92,7 @@ export function initDashboard() {
     document.getElementById("categoryChart"),
   );
 
-  // Navigation
+  // ---------- Navigation ----------
   refs.nav.querySelectorAll(".nav-item").forEach((btn) => {
     btn.addEventListener("click", () => {
       refs.nav
@@ -105,22 +106,24 @@ export function initDashboard() {
     });
   });
 
-  // Add habit
+  // ---------- Add habit ----------
   refs.addHabitBtn.addEventListener("click", () => editHabit(null));
 
-  // Settings
-renderSettings({
-  segmented: refs.themeSegmented,
-  resetBtn: refs.resetBtn,
-  themeLabel: refs.themeLabel,
-  themeIcon: refs.themeIcon,
-  themeToggle: refs.themeToggle,
-  userNameInput: refs.userNameInput,
-  saveProfileBtn: refs.saveProfileBtn,
-  profileSavedMsg: refs.profileSavedMsg,
-});
+  // ---------- Settings ----------
+  renderSettings({
+    segmented: refs.themeSegmented,
+    resetBtn: refs.resetBtn,
+    themeLabel: refs.themeLabel,
+    themeIcon: refs.themeIcon,
+    themeToggle: refs.themeToggle,
+    userNameInput: refs.userNameInput,
+    saveProfileBtn: refs.saveProfileBtn,
+    profileSavedMsg: refs.profileSavedMsg,
+    addCategoryBtn: refs.addCategoryBtn,
+    categoriesList: refs.categoriesList,
+  });
 
-  // Theme change → refresh charts
+  // ---------- Theme change → refresh charts ----------
   document.addEventListener("dd-theme-change", () => {
     refreshTodayChartTheme(todayChart);
     refreshWeekChartTheme(weekChart, tIdx);
@@ -128,7 +131,7 @@ renderSettings({
     refreshCategoryChartTheme(catChart);
   });
 
-  // Render
+  // ---------- Render helpers ----------
   function renderTodayList() {
     const list = computeTodayList();
     refs.todayList.innerHTML = "";
@@ -181,6 +184,14 @@ renderSettings({
     updateCategoryChart(catChart, computeCategoryTotals());
   }
 
+  // ---------- Subscriptions ----------
   subscribe(renderAll);
-  load().then(renderAll);
+  subscribeCategories(() => renderAll());
+
+  document.addEventListener("dd-categories-change", () => renderAll());
+
+  // ---------- Bootstrap ----------
+  loadCategories()
+    .then(() => load())
+    .then(renderAll);
 }

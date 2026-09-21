@@ -1,4 +1,4 @@
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export function migrate(raw) {
   if (!raw || typeof raw !== "object") {
@@ -14,6 +14,10 @@ export function migrate(raw) {
       checks: data.checks && typeof data.checks === "object" ? data.checks : {},
       tasks: Array.isArray(data.tasks) ? data.tasks : [],
     };
+  }
+
+  if (data.version < 2) {
+    data.version = 2;
   }
 
   data.version = SCHEMA_VERSION;

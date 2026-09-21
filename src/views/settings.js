@@ -2,7 +2,7 @@ import { resetAll } from "../store/state.js";
 import { openModal } from "../components/modal.js";
 import { applyTheme, setTheme } from "../store/theme.js";
 import { getProfile, setProfile } from "../store/profile.js";
-
+import { renderCategoriesList, openAddCategory } from "./categories.js";
 export function renderSettings(refs) {
   const {
     segmented,
@@ -48,7 +48,15 @@ export function renderSettings(refs) {
       document.dispatchEvent(new CustomEvent("dd-theme-change"));
     });
   }
-
+if (addCategoryBtn) {
+  addCategoryBtn.addEventListener("click", openAddCategory);
+}
+if (categoriesList) {
+  renderCategoriesList(categoriesList);
+  document.addEventListener("dd-categories-change", () => {
+    renderCategoriesList(categoriesList);
+  });
+}
   // ---------- Profile ----------
   if (userNameInput) {
     getProfile().then((p) => {
