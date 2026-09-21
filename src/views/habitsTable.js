@@ -11,11 +11,13 @@ import { DAYS_FR, todayIndex, todayKey } from "../utils/dates.js";
 import { openModal } from "../components/modal.js";
 import {
   getCategories,
-  categoryKeys,
   categoryColor,
   categoryLabel,
 } from "../store/categories.js";
 
+// ============================================================
+// Habits list
+// ============================================================
 export function renderHabitsList(container) {
   container.innerHTML = "";
   const tIdx = todayIndex();
@@ -141,22 +143,23 @@ export function renderHabitsList(container) {
   });
 }
 
+// ============================================================
+// Category legend (pills at top of Habits view)
+// ============================================================
 export function renderCategoryLegend(container) {
   container.innerHTML = "";
   const cats = getCategories();
   Object.entries(cats).forEach(([key, info]) => {
-    const opt = document.createElement("option");
-    opt.value = key;
-    opt.textContent = info.label;
-    if (habit && habit.cat === key) opt.selected = true;
-    catSelect.appendChild(opt);
+    const pill = document.createElement("span");
+    pill.className = "pill";
+    pill.innerHTML = `<span class="pill-dot" style="background:${info.color}"></span>${info.label}`;
+    container.appendChild(pill);
   });
-  // Fallback: if no category matches and it's a new habit, preselect the first
-  if (!habit && catSelect.options.length) {
-    catSelect.selectedIndex = 0;
-  }
 }
 
+// ============================================================
+// Add / Edit habit modal
+// ============================================================
 export function editHabit(habit) {
   const form = document.createElement("div");
 
@@ -187,13 +190,24 @@ export function editHabit(habit) {
   const catLabel = document.createElement("label");
   catLabel.textContent = "Catégorie";
   const catSelect = document.createElement("select");
-  Object.entries(CATEGORIES).forEach(([key, info]) => {
+
+  const cats = getCategories();
+  Object.entries(cats).forEach(([key, info]) => {
     const opt = document.createElement("option");
     opt.value = key;
     opt.textContent = info.label;
     if (habit && habit.cat === key) opt.selected = true;
     catSelect.appendChild(opt);
   });
+  // Pre-select first category for new habits
+  if (!habit && catSelect.options.length) {
+    catSelect.selectedIndex = 0;
+  }
+  // Fallback: if the habit's category no longer exists, select first
+  if (habit && !cats[habit.cat] && catSelect.options.length) {
+    catSelect.selectedIndex = 0;
+  }
+
   catField.appendChild(catLabel);
   catField.appendChild(catSelect);
 

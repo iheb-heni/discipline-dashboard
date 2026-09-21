@@ -149,6 +149,7 @@ function openCategoryModal(key) {
 
 function confirmDelete(key) {
   const cats = getCategories();
+  if (!cats[key]) return; // already deleted
   const cat = cats[key];
   const habitCount = state.habits.filter((h) => h.cat === key).length;
 
