@@ -1,13 +1,24 @@
-import { state } from "../store/state.js";
 import { resetAll } from "../store/state.js";
 import { openModal } from "../components/modal.js";
 import { applyTheme, setTheme } from "../store/theme.js";
+import { getProfile, setProfile } from "../store/profile.js";
 
 export function renderSettings(refs) {
-  const { segmented, resetBtn, themeLabel, themeIcon, themeToggle } = refs;
+  const {
+    segmented,
+    resetBtn,
+    themeLabel,
+    themeIcon,
+    themeToggle,
+    userNameInput,
+    saveProfileBtn,
+    profileSavedMsg,
+  } = refs;
 
+  // ---------- Theme ----------
   function syncSegmented() {
-    const pref = document.documentElement.getAttribute("data-theme-pref") || "system";
+    const pref =
+      document.documentElement.getAttribute("data-theme-pref") || "system";
     segmented.querySelectorAll("button").forEach((b) => {
       b.classList.toggle("is-active", b.dataset.themeChoice === pref);
     });
@@ -38,6 +49,31 @@ export function renderSettings(refs) {
     });
   }
 
+  // ---------- Profile ----------
+  if (userNameInput) {
+    getProfile().then((p) => {
+      userNameInput.value = p.name || "";
+    });
+  }
+
+  if (saveProfileBtn && userNameInput) {
+    const save = async () => {
+      const name = userNameInput.value.trim();
+      await setProfile({ name });
+      if (profileSavedMsg) {
+        profileSavedMsg.style.opacity = "1";
+        setTimeout(() => (profileSavedMsg.style.opacity = "0"), 1400);
+      }
+      document.dispatchEvent(new CustomEvent("dd-profile-change"));
+    };
+
+    saveProfileBtn.addEventListener("click", save);
+    userNameInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") save();
+    });
+  }
+
+  // ---------- Reset ----------
   resetBtn.addEventListener("click", () => {
     openModal({
       title: "Réinitialiser les données",

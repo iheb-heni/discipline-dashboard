@@ -1,5 +1,9 @@
 import { subscribe, load, state, toggleCheck } from "../store/state.js";
-import { renderHabitsList, renderCategoryLegend, editHabit } from "./habitsTable.js";
+import {
+  renderHabitsList,
+  renderCategoryLegend,
+  editHabit,
+} from "./habitsTable.js";
 import {
   computeTodayCount,
   computeTodayTotal,
@@ -9,8 +13,14 @@ import {
   computeCategoryTotals,
   computeStreak,
 } from "./stats.js";
+import { getProfile } from "../store/profile.js";
 import { renderSettings } from "./settings.js";
-import { todayIndex, formatLongDate, DAYS_FR ,todayKey} from "../utils/dates.js";
+import {
+  todayIndex,
+  formatLongDate,
+  DAYS_FR,
+  todayKey,
+} from "../utils/dates.js";
 import {
   createTodayChart,
   updateTodayChart,
@@ -55,30 +65,38 @@ export function initDashboard() {
     themeLabel: document.getElementById("themeLabel"),
     themeSegmented: document.getElementById("themeSegmented"),
     resetBtn: document.getElementById("resetBtn"),
+    userName: document.getElementById("userName"),
+    userNameInput: document.getElementById("userNameInput"),
+    saveProfileBtn: document.getElementById("saveProfileBtn"),
+    profileSavedMsg: document.getElementById("profileSavedMsg"),
   };
 
   refs.dateLine.textContent = formatLongDate();
-
+  async function refreshGreeting() {
+    const p = await getProfile();
+    refs.userName.textContent = p.name ? " " + p.name : "";
+  }
+  refreshGreeting();
+  document.addEventListener("dd-profile-change", refreshGreeting);
   const tIdx = todayIndex();
 
   // Charts
   const todayChart = createTodayChart(document.getElementById("todayChart"));
-  const weekChart = createWeekChart(
-    document.getElementById("weekChart"),
-    tIdx
-  );
+  const weekChart = createWeekChart(document.getElementById("weekChart"), tIdx);
   const statsWeekChart = createWeekChart(
     document.getElementById("statsWeekChart"),
-    tIdx
+    tIdx,
   );
   const catChart = createCategoryChart(
-    document.getElementById("categoryChart")
+    document.getElementById("categoryChart"),
   );
 
   // Navigation
   refs.nav.querySelectorAll(".nav-item").forEach((btn) => {
     btn.addEventListener("click", () => {
-      refs.nav.querySelectorAll(".nav-item").forEach((b) => b.classList.remove("is-active"));
+      refs.nav
+        .querySelectorAll(".nav-item")
+        .forEach((b) => b.classList.remove("is-active"));
       btn.classList.add("is-active");
       const view = btn.dataset.view;
       Object.entries(refs.views).forEach(([k, el]) => {
@@ -91,13 +109,16 @@ export function initDashboard() {
   refs.addHabitBtn.addEventListener("click", () => editHabit(null));
 
   // Settings
-  renderSettings({
-    segmented: refs.themeSegmented,
-    resetBtn: refs.resetBtn,
-    themeLabel: refs.themeLabel,
-    themeIcon: refs.themeIcon,
-    themeToggle: refs.themeToggle,
-  });
+renderSettings({
+  segmented: refs.themeSegmented,
+  resetBtn: refs.resetBtn,
+  themeLabel: refs.themeLabel,
+  themeIcon: refs.themeIcon,
+  themeToggle: refs.themeToggle,
+  userNameInput: refs.userNameInput,
+  saveProfileBtn: refs.saveProfileBtn,
+  profileSavedMsg: refs.profileSavedMsg,
+});
 
   // Theme change → refresh charts
   document.addEventListener("dd-theme-change", () => {
@@ -115,7 +136,7 @@ export function initDashboard() {
       const row = document.createElement("div");
       row.className = "today-item" + (item.done ? " is-done" : "");
       row.innerHTML = `<span class="today-check">✓</span><span>${item.name}</span>`;
-row.addEventListener("click", () => toggleCheck(item.id, todayKey()));
+      row.addEventListener("click", () => toggleCheck(item.id, todayKey()));
       refs.todayList.appendChild(row);
     });
   }
