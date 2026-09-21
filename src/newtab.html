@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discipline Dashboard</title>
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/layout.css" />
+    <link rel="stylesheet" href="styles/components.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <div>
+          <h1 class="display-font">Discipline quotidienne</h1>
+          <p id="dateLine">—</p>
+        </div>
+        <div id="todayBadge">
+          <div class="score" id="todayScoreText">0 / 0</div>
+          <div class="label">accompli aujourd'hui</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="container" id="app">
+      <section id="view-dashboard">
+        <h2 class="section-title">Suivi de la semaine</h2>
+        <div class="panel">
+          <div class="table-responsive">
+            <table class="table habits align-middle mb-0" id="habitsTable">
+              <thead>
+                <tr id="habitsHead">
+                  <th style="min-width: 210px">Habitude</th>
+                </tr>
+              </thead>
+              <tbody id="habitsBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <h2 class="section-title">Vue d'ensemble</h2>
+        <div class="row g-3">
+          <div class="col-12 col-lg-4">
+            <div class="chart-card">
+              <h3>Aujourd'hui</h3>
+              <p class="sub">Part des habitudes cochées pour la journée en cours.</p>
+              <div class="chart-wrap"><canvas id="todayChart"></canvas></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="chart-card">
+              <h3>Progression sur 7 jours</h3>
+              <p class="sub">Nombre d'habitudes cochées, jour par jour.</p>
+              <div class="chart-wrap"><canvas id="weekChart"></canvas></div>
+            </div>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="chart-card">
+              <h3>Par catégorie</h3>
+              <p class="sub">Total de la semaine, réparti par domaine.</p>
+              <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <p class="note">
+          Les cases cochées sont conservées dans ce navigateur et synchronisées
+          si vous êtes connecté à votre compte Chrome.
+        </p>
+      </section>
+    </main>
+
+    <script src="../../vendor/chart.umd.min.js"></script>
+    <script type="module" src="newtab.js"></script>
+  </body>
+</html>
