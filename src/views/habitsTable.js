@@ -39,6 +39,7 @@ export function renderHabitsList(container) {
     const cat = hasCat
       ? { label: categoryLabel(h.cat), color: categoryColor(h.cat) }
       : null;
+
     const row = document.createElement("div");
     row.className = "habit-row";
 
@@ -66,14 +67,13 @@ export function renderHabitsList(container) {
     const meta = document.createElement("div");
     meta.className = "habit-meta";
 
-    const catPill = document.createElement("span");
-    catPill.className = "pill";
-    catPill.innerHTML = `<span class="pill-dot" style="background:${cat.color}"></span>${cat.label}`;
-    meta.appendChild(catPill);
-    const hasCat = h.cat && categoryLabel(h.cat);
-    const cat = hasCat
-      ? { label: categoryLabel(h.cat), color: categoryColor(h.cat) }
-      : null;
+    if (cat) {
+      const catPill = document.createElement("span");
+      catPill.className = "pill";
+      catPill.innerHTML = `<span class="pill-dot" style="background:${cat.color}"></span>${cat.label}`;
+      meta.appendChild(catPill);
+    }
+
     if (h.target) {
       const t = document.createElement("span");
       t.className = "habit-target";
@@ -153,14 +153,12 @@ export function renderHabitsList(container) {
 // ============================================================
 export function renderCategoryLegend(container) {
   container.innerHTML = "";
-
   const cats = getCategories();
   Object.entries(cats).forEach(([key, info]) => {
-    const opt = document.createElement("option");
-    opt.value = key;
-    opt.textContent = info.label;
-    if (habit && habit.cat === key) opt.selected = true;
-    catSelect.appendChild(opt);
+    const pill = document.createElement("span");
+    pill.className = "pill";
+    pill.innerHTML = `<span class="pill-dot" style="background:${info.color}"></span>${info.label}`;
+    container.appendChild(pill);
   });
 }
 
@@ -197,6 +195,7 @@ export function editHabit(habit) {
   const catLabel = document.createElement("label");
   catLabel.textContent = "Catégorie";
   const catSelect = document.createElement("select");
+
   const noneOpt = document.createElement("option");
   noneOpt.value = "";
   noneOpt.textContent = "Aucune";
@@ -211,12 +210,8 @@ export function editHabit(habit) {
     if (habit && habit.cat === key) opt.selected = true;
     catSelect.appendChild(opt);
   });
-  // Pre-select first category for new habits
-  if (!habit && catSelect.options.length) {
-    catSelect.selectedIndex = 0;
-  }
-  // Fallback: if the habit's category no longer exists, select first
-  if (habit && !cats[habit.cat] && catSelect.options.length) {
+
+  if (habit && habit.cat && !cats[habit.cat] && catSelect.options.length) {
     catSelect.selectedIndex = 0;
   }
 
